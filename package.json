@@ -1,6 +1,9 @@
 {
   "name": "GossipProtocol",
   "version": "1.0.0",
+  "engines": {
+    "node": "0.10.35"
+  },
   "description": "A chat program using gossip protocol to communicate",
   "main": "server.js",
   "scripts": {
