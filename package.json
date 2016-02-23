@@ -16,7 +16,8 @@
     "chat"
   ],
   "dependencies": {
-    "express": "4.13.4"
+    "express": "4.13.4",
+    "uuid": "2.0.1"
   },
   "author": "Steven C. Carroll",
   "license": "ISC",
