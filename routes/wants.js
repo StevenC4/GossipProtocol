@@ -8,6 +8,7 @@ router.post('/wants', function(req, res) {
     workQueue.enqueue(req.body);
     while (!workQueue.empty()) {
         var want = workQueue.dequeue();
+	var url = want.EndPoint;
     }
 
     res.send({message: 'Want received and processed'});
