@@ -4,7 +4,7 @@ var queue = [];
 
 workQueueFunctions.enqueue = function(data) {
     queue.push(data);
-}
+};
 
 workQueueFunctions.dequeue = function() {
     if (queue.length > 0) {
@@ -12,10 +12,10 @@ workQueueFunctions.dequeue = function() {
     } else {
         return null;
     }
-}
+};
 
 workQueueFunctions.empty = function() {
     return queue.length <= 0;
-}
+};
 
 module.exports = workQueueFunctions;

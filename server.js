@@ -1,6 +1,7 @@
 // Dependencies
 var bodyParser = require('body-parser');
 var express = require('express');
+var fs = require('graceful-fs');
 var http = require('http');
 var httpClient = require('./helpers/httpClient.js');
 var websocket = require('./helpers/websocket.js');
@@ -18,16 +19,22 @@ var rumorStorage = require('./helpers/rumor-storage.js');
 
 
 // Set up specifics of the client
+var protocol = argv.hasOwnProperty('pr') ? argv.pr : 'http';
 var domain = argv.hasOwnProperty('d') ? argv.d : 'localhost';
 var port = argv.hasOwnProperty('p') ? argv.p : 9876;
 var sleepInterval = argv.hasOwnProperty('s') ? argv.s : 900;
 var neighbors = argv.hasOwnProperty('n') ? JSON.parse(argv.n) : [];
 
 
+
 // Setting up instance configurations
+config.baseUrl = protocol + '://' + domain + ':' + port;
+config.sleep = sleepInterval;
+config.neighbors = neighbors;
 config.setBaseUrl(domain, port);
 config.setSleep(sleepInterval);
 config.setNeighbors(neighbors);
+//rumorStorage.save(config.getOriginId());
 
 
 // Start up server
@@ -80,7 +87,7 @@ app.use(function(req, res, next) {
     next(err);
 });
 
-
+/*
 // Looping functionality
 
 function sleep() {
@@ -108,3 +115,13 @@ sleep();
 
 //httpClient.send(neighborUrl1 + '/rumors', rumorStorage.getRumor());
 //httpClient.send(neighborUrl2 + '/wants', rumorStorage.getWant());
+*/
+
+var fork = require('child_process').fork;
+child = fork('./send-loop.js', ['-u', config.getBaseUrl()]);
+child.on('message', function(data) {
+    //console.log("Parent receiving message", data);
+    child.send({rumors: rumorStorage.getRumors(), messages: rumorStorage.getMessages()});
+});
+
+child.send({message: 'this'});

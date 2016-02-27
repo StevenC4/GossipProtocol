@@ -1,13 +1,14 @@
 var express = require('express');
 
 var config = require('../helpers/config.js');
-var io = require('../server.js');
 var rumorStorage = require('../helpers/rumor-storage.js');
-var websocket = require('../helpers/websocket.js');
-
-console.log(io.sockets);
+var websocket = require('../helpers/websocket.js')
 
 var router = express.Router();
+
+router.get('/rumors', function(req, res) {
+    res.send({rumors: rumorStorage.getRumors(), messages: rumorStorage.getMessages()});
+});
 
 router.post('/rumors', function(req, res) {
     rumorStorage.store(req.body);

@@ -1,42 +1,50 @@
 {
-    "0": {
-        "domain": "localhost",
-	"port": 9453,
-	"neighbors": [7, 1]
-    },
-    "1": {
-        "domain": "localhost",
-	"port": 9454,
-	"neighbors": [0, 2]
-    },
-    "2": {
-        "domain": "localhost",
-	"port": 9455,
-	"neighbors": [1, 3]
-    },
-    "3": {
-        "domain": "localhost",
-	"port": 9456,
-	"neighbors": [2, 4]
-    },
-    "4": {
-        "domain": "localhost",
-	"port": 9457,
-	"neighbors": [3, 5]
-    },
-    "5": {
-        "domain": "localhost",
-	"port": 9458,
-	"neighbors": [4, 6]
-    },
-    "6": {
-        "domain": "localhost",
-	"port": 9459,
-	"neighbors": [5, 7]
-    },
-    "7": {
-        "domain": "localhost",
-	"port": 9460,
-	"neighbors": [6, 0]
-    },
+  "0": {
+    "domain": "localhost",
+    "port": 9453,
+    "protocol": "http",
+    "neighbors": [7, 1]
+  },
+  "1": {
+    "domain": "localhost",
+    "port": 9454,
+    "protocol": "http",
+    "neighbors": [0, 2]
+  },
+  "2": {
+    "domain": "localhost",
+    "port": 9455,
+    "protocol": "http",
+    "neighbors": [1, 3]
+  },
+  "3": {
+    "domain": "localhost",
+    "port": 9456,
+    "protocol": "http",
+    "neighbors": [2, 4]
+  },
+  "4": {
+    "domain": "localhost",
+    "port": 9457,
+    "protocol": "http",
+    "neighbors": [3, 5]
+  },
+  "5": {
+    "domain": "localhost",
+    "port": 9458,
+    "protocol": "http",
+    "neighbors": [4, 6]
+  },
+  "6": {
+    "domain": "localhost",
+    "port": 9459,
+    "protocol": "http",
+    "neighbors": [5, 7]
+  },
+  "7": {
+    "domain": "localhost",
+    "port": 9460,
+    "protocol": "http",
+    "neighbors": [6, 0]
+  },
 }

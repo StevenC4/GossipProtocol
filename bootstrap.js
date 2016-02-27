@@ -1,5 +1,5 @@
 var fork = require('child_process').fork;
-var fs = require('fs');
+var fs = require('graceful-fs');
 
 var argv = require('minimist')(process.argv.slice(2));
 
@@ -12,14 +12,15 @@ if (argv.hasOwnProperty('f')) {
     var numClients = argv.hasOwnProperty('c') ? argv.c : 8;
 
     var currentPort = 9384;
-    
+
     clients = {};
     for (var i = 0; i < numClients; i++) {
         clients[i] = {
-	    domain: "localhost",
-	    port: currentPort++,
-	    neighbors: [(((i - 1) % numClients) + numClients) % numClients, (i + 1) % numClients]
-	}
+            domain: "localhost",
+            port: currentPort++,
+            protocol: 'http',
+            neighbors: [(((i - 1) % numClients) + numClients) % numClients, (i + 1) % numClients]
+        }
     }
 }
 
@@ -33,10 +34,10 @@ for (var i = 0; i < keys.length; i++) {
     var neighbors = [];
     for (var j = 0; j < client.neighbors.length; j++) {
         var neighborIndex = client.neighbors[j];
-	var neighbor = clients[neighborIndex];
-	var baseUrl = 'http://' + neighbor.domain + ':' + neighbor.port;
-	neighbors.push(baseUrl);
+        var neighbor = clients[neighborIndex];
+        var baseUrl = neighbor.protocol + '://' + neighbor.domain + ':' + neighbor.port;
+        neighbors.push(baseUrl);
     }
 
-    children[i] = fork('./server.js', ['-d', client.domain, '-p', client.port, '-n', JSON.stringify(neighbors)]);    
+    children[i] = fork('./server.js', ['-d', client.domain, '-p', client.port, '-n', JSON.stringify(neighbors)]);
 }

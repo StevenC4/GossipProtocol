@@ -18,7 +18,7 @@ div.conversation-window {
     margin: 18px auto 0;
     width: 75%;
     height: 65%;
-    overflow-y: scroll; 
+    overflow-y: scroll;
     border: 1px solid #777;
     border-radius: 6px;
 }
@@ -62,11 +62,11 @@ div.conversation-window div.message {
 }
 
 div.conversation-window div.message div {
-    display: inline; 
+    display: inline;
 }
 
 div.conversation-window div.message div.originator {
-    margin-right: 8px; 
+    margin-right: 8px;
     font-weight: bold;
 }
 
