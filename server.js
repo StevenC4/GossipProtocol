@@ -118,10 +118,13 @@ sleep();
 */
 
 var fork = require('child_process').fork;
-child = fork('./send-loop.js', ['-u', config.getBaseUrl()]);
-child.on('message', function(data) {
-    //console.log("Parent receiving message", data);
-    child.send({rumors: rumorStorage.getRumors(), messages: rumorStorage.getMessages()});
+var fork = require('child_process').spawn;
+//child = fork('./send-loop.js', ['-u', config.getBaseUrl(), '-s', config.getSleep()]);
+var exec = require('child_process').exec;
+exec('node ./send-loop.js -u ' + config.getBaseUrl() + ' -s ' + config.getSleep(), function(error, stdout, stderr) {
+    console.log('stdout: ' + stdout);
+    console.log('stderr: ' + stderr);
+    if (error !== null) {
+        console.log('exec error: ' + error);
+    }
 });
-
-child.send({message: 'this'});

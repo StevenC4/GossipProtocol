@@ -1,5 +1,6 @@
 var config = require('./config.js');
 var rumorStorage = require('./rumor-storage.js');
+var httpClient = require('./httpClient.js');
 
 var functions = {};
 
@@ -9,6 +10,7 @@ functions.init = function(server) {
     io = require('socket.io')(server);
 
     io.on('connection', function(socket) {
+
         socket.on('init', function() {
             socket.emit('update conversation', {messages: rumorStorage.getMessages()});
         });
@@ -28,12 +30,21 @@ functions.init = function(server) {
             socket.emit('update conversation', {messages: rumorStorage.getMessages()});
         });
 
-        socket.on('request send loop init', function() {
-            socket.emit('send loop init', {config: config.getConfig(), rumors: rumorStorage.getRumors(), messages: rumorStorage.getMessages()});
-        });
+        socket.on('send random message', function() {
+            var neighborUrl = config.getNeighbor();
 
-        socket.on('send updated rumors', function() {
-            socket.emit('receive updated rumors', {1: "Here"});
+            var isWant = Math.floor(Math.random() * 2);
+            var data = null;
+
+            if (isWant || rumorStorage.rumorEmpty()) {
+                neighborUrl += '/wants';
+                data = rumorStorage.getWant();
+            } else {
+                neighborUrl += '/rumors';
+                data = rumorStorage.getRumor();
+            }
+
+            httpClient.send(neighborUrl, data);
         });
     });
 };
