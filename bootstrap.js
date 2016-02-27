@@ -34,7 +34,8 @@ for (var i = 0; i < keys.length; i++) {
     for (var j = 0; j < client.neighbors.length; j++) {
         var neighborIndex = client.neighbors[j];
 	var neighbor = clients[neighborIndex];
-	neighbors.push({domain: neighbor.domain, port: neighbor.port});
+	var baseUrl = 'http://' + neighbor.domain + ':' + neighbor.port;
+	neighbors.push(baseUrl);
     }
 
     children[i] = fork('./server.js', ['-d', client.domain, '-p', client.port, '-n', JSON.stringify(neighbors)]);    
