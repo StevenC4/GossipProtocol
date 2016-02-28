@@ -12,7 +12,7 @@ functions.store = function(rumor) {
     var originId = uuid[0];
     var sequenceNum = uuid[1];
 
-    console.log("Storing rumor: " + rumor.Rumor.MessageID);
+    //console.log("Storing rumor: " + rumor.Rumor.MessageID);
 
     if (!rumors.hasOwnProperty(originId)) {
         rumors[originId] = {};
@@ -20,56 +20,41 @@ functions.store = function(rumor) {
 
     if (!rumors[originId].hasOwnProperty(sequenceNum)) {
         rumors[originId][sequenceNum] = rumor.Rumor;
-        addMessage(rumor.Timestamp, rumor.Rumor);
+        addMessage(rumor.Rumor);
     }
-
-    //require('./websocket.js').sendRumors(rumors, messages);
-    //require('./websocket.js').receiveMessage();
-    //functions.save(config.getOriginId());
 };
 
 functions.getMessages = function() {
     return messages;
 };
 
-function addMessage(timestamp, rumor) {
-    if (!messages.hasOwnProperty(timestamp)) {
-        messages[timestamp] = {};
-    }
+function addMessage(rumor) {
+    var key = rumor.Timestamp + ':' + rumor.MessageID;
 
-    if (!messages[timestamp].hasOwnProperty(rumor.MessageID)) {
-        messages[timestamp][rumor.MessageID] = {
+    if (!messages.hasOwnProperty(key)) {
+        messages[key] = {
             originator: rumor.Originator,
             text: rumor.Text,
-            timestamp: timestamp,
+            timestamp: rumor.Timestamp,
             id: rumor.MessageID
-        }
-    } // Don't store it if they already have it
+        };
+    }
 }
 
 functions.getRumor = function() {
-    var timestamps = Object.keys(messages);
+    var keys = Object.keys(messages);
 
-    if (timestamps.length == 0) {
+    if (keys.length == 0) {
         return null;
     }
 
-    var tsIndex = Math.floor(Math.random() * timestamps.length);
-    var timestamp = timestamps[tsIndex];
-    var tsMessages = messages[timestamp];
+    var keyIndex = Math.floor(Math.random() * keys.length);
+    var key = keys[keyIndex];
 
-    var messageIds = Object.keys(tsMessages);
-
-    if (messageIds.length == 0) {
-        return null;
-    }
-
-    var midIndex = Math.floor(Math.random() * messageIds.length);
-    var messageId = messageIds[midIndex];
-
-    var messageIdParts = messageId.split(':');
-    var originId = messageIdParts[0];
-    var sequenceNum = messageIdParts[1];
+    var keyParts = key.split(':');
+    var timestamp = keyParts[0];
+    var originId = keyParts[1];
+    var sequenceNum = keyParts[2];
 
     var rumor = rumors[originId][sequenceNum];
     return {Rumor: rumor, EndPoint: config.getBaseUrl()};
@@ -172,58 +157,6 @@ functions.getMessages = function() {
 
 functions.setMessages = function(newMessages) {
     messages = newMessages;
-};
-
-functions.save = function(originId) {
-    var dir = './workdir';
-
-    if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir);
-    }
-
-    dir += '/' + originId;
-    if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir);
-    }
-
-    var filename = dir + '/rumors';
-    fs.writeFile(filename, JSON.stringify({rumors: rumors, messages: messages}), function(err) {
-        if (err) {
-            console.log("Config error saving");
-            console.log(err);
-        }
-    });
-};
-
-functions.load = function(originId) {
-    var filename = './workdir/' + originId + '/rumors';
-
-    var fd = fs.openSync(filename, 'r');
-    if (!fd) {
-        console.log(fd);
-        console.log(filename + " does not exist");
-        return;
-    }
-
-    var data = fs.readFileSync(filename, 'utf-8');
-    data = JSON.parse(data);
-    rumors = data.rumors;
-    messages = data.messages;
-
-    fs.readFile(filename, function(err, data) {
-        if (err) {
-            console.log("Error loading rumor from " + filename);
-            console.log(err);
-        } else {
-            console.log("Successfully loaded rumor from " + filename);
-            data = JSON.parse(data);
-            rumors = data.rumors;
-            messages = data.messages;
-            console.log(data);
-        }
-    });
-
-    fs.close(fd)
 };
 
 module.exports = functions;

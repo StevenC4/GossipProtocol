@@ -1,5 +1,7 @@
+var name = '';
+
 $(document).ready(function() {
-    var name = $('input.originator').val();
+    name = $('input.originator').val();
     var baseUrl = $('input.base-url').val();
 
     var socket = io(baseUrl);
@@ -7,41 +9,53 @@ $(document).ready(function() {
     socket.emit('init');
 
     socket.on('update conversation', function(data) {
-        //console.log(data);
+        var existentMessageDivs = $('div.message');
+        var existentMessageLength = existentMessageDivs.length;
+        var existentMessageIndex = 0;
 
         var messages = data.messages;
+        var newMessageIds = Object.keys(messages).sort();
+        var newMessageIdsLength = newMessageIds.length;
+        var newMessageIdsIndex = 0;
 
-        var lastObject = null;
-        var timestamps = Object.keys(messages).sort();
-        for (var i = 0; i < timestamps.length; i++) {
-            var timestamp = timestamps[i];
+        var lastExistentMessage = null;
 
-            var timeBucket = messages[timestamp];
-            var messageIds = Object.keys(timeBucket).sort();
-            for (var j = 0; j < messageIds.length; j++) {
-                var messageId = messageIds[j];
-                var message = timeBucket[messageId];
+        //var numLoops = 0;
+        while (existentMessageIndex < existentMessageLength && newMessageIdsIndex < newMessageIdsLength) {
+            var currentExistentMessage = existentMessageDivs[existentMessageIndex];
+            var currentExistentMessageId = $(currentExistentMessage).attr('id');
 
-                var originatorDisplay = (name == message.originator) ? "Me" : message.originator;
+            var currentNewMessageId = newMessageIds[newMessageIdsIndex];
+            var currentNewMessage = messages[currentNewMessageId];
 
-                var messageDiv = $('<div/>', {id: timestamp + ":" + messageId, class: 'message'}).append(
-                    $('<div/>', {class: 'originator', text: originatorDisplay + ":"})
-                ).append(
-                    $('<div/>', {class: 'text', text: message.text})
-                );
+            if (equals(currentNewMessageId, currentExistentMessageId)) {
+                lastExistentMessage = currentExistentMessage;
 
-                var objectId = timestamp + ":" + messageId;
-                objectId = objectId.replace(/:/g, '\\:');
-                if ($("div#" + objectId).length == 0) {
-                    if (lastObject == null) {
-                        $('div.conversation-window').prepend(messageDiv);
-                    } else {
-                        messageDiv.insertAfter(lastObject);
-                    }
+                existentMessageIndex++;
+                newMessageIdsIndex++;
+            } else if (greaterThan(currentNewMessageId, currentExistentMessageId)) {
+                lastExistentMessage = currentExistentMessage;
+                existentMessageIndex++;
+            } else {
+                var messageDiv = createMessageDiv(currentNewMessage);
+
+                if (lastExistentMessage == null) {
+                    $('div.conversation-window').prepend(messageDiv);
+                } else {
+                    messageDiv.insertAfter(lastExistentMessage);
                 }
 
-                lastObject = $("div#" + objectId);
+                lastExistentMessage = messageDiv;
+                newMessageIdsIndex++;
             }
+        }
+
+        // If there are still new elements left, append the rest
+        while (newMessageIdsIndex < newMessageIdsLength) {
+            currentNewMessageId = newMessageIds[newMessageIdsIndex++];
+            currentNewMessage = messages[currentNewMessageId];
+            var messageDiv = createMessageDiv(currentNewMessage);
+            $('div.conversation-window').append(messageDiv);
         }
     });
 
@@ -61,12 +75,65 @@ $(document).ready(function() {
     function submitText() {
         var textarea = $('textarea#message-input');
 
-        var text = textarea.val()
+        var text = textarea.val();
         if (text.trim() != "" && text.trim() != '') {
-            socket.emit('chat message', {text: text});
+            socket.emit('chat message', {text: text, timestamp: Math.floor(new Date() / 1000)});
         }
         textarea.val('');
         textarea.focus();
     }
 });
 
+function createMessageDiv(message) {
+    var originatorDisplay = (name == message.originator) ? "Me" : message.originator;
+
+    return $('<div/>', {id: message.timestamp + ":" + message.id, class: 'message'}).append(
+        $('<div/>', {class: 'originator', text: originatorDisplay + ":"})
+    ).append(
+        $('<div/>', {class: 'text', text: message.text})
+    );
+}
+
+function equals(key1, key2) {
+    return key1 === key2;
+}
+
+function greaterThan(key1, key2) {
+    var parts1 = key1.split(':');
+    var ts1 = parseInt(parts1[0]);
+    var seq1 = parseInt(parts1[2]);
+
+    var parts2 = key2.split(':');
+    var ts2 = parseInt(parts2[0]);
+    var seq2 = parseInt(parts2[2]);
+
+    if (ts1 > ts2) {
+        return true;
+    } else if (ts1 == ts2 && parts1[1] > parts2[1]) {
+        return true;
+    } else if (ts1 == ts2 && parts1[1] == parts2[1] && seq1 > seq2) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function lessThan(key1, key2) {
+    var parts1 = key1.split(':');
+    var ts1 = parseInt(parts1[0]);
+    var seq1 = parseInt(parts1[2]);
+
+    var parts2 = key2.split(':');
+    var ts2 = parseInt(parts2[0]);
+    var seq2 = parseInt(parts2[2]);
+
+    if (ts1 < ts2) {
+        return true;
+    } else if (ts1 == ts2 && parts1[1] < parts2[1]) {
+        return true;
+    } else if (ts1 == ts2 && parts1[1] == parts2[1] && seq1 < seq2) {
+        return true;
+    } else {
+        return false;
+    }
+}

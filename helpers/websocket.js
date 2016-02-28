@@ -20,7 +20,8 @@ functions.init = function(server) {
                 "Rumor": {
                     MessageID: config.getNewMessageId(),
                     Originator: config.getOriginator(),
-                    Text: data.text
+                    Text: data.text,
+                    Timestamp: data.timestamp
                 },
                 "EndPoint": config.getBaseUrl(),
                 "Timestamp": Math.floor(new Date() / 1000)

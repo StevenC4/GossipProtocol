@@ -3,7 +3,6 @@ var request = require('request');
 var functions = {};
 
 functions.send = function(url, data) {
-    console.log(data);
     request({
         url: url,
         method: 'POST',

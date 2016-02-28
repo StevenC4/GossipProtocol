@@ -8,8 +8,6 @@ var workQueue = require('../helpers/work-queue.js');
 
 router.post('/wants', function(req, res) {
 
-    console.log('RECEIVED WANT');
-
     workQueue.enqueue(req.body);
     while (!workQueue.empty()) {
         var want = workQueue.dequeue();

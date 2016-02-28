@@ -34,7 +34,6 @@ config.neighbors = neighbors;
 config.setBaseUrl(domain, port);
 config.setSleep(sleepInterval);
 config.setNeighbors(neighbors);
-//rumorStorage.save(config.getOriginId());
 
 
 // Start up server
@@ -53,7 +52,7 @@ console.log(message);
 // Add middleware
 app.set('view engine', 'jade');
 app.use(bodyParser.json());
-app.use(logger('dev'));
+//app.use(logger('dev'));
 
 app.all('/*', function(req, res, next) {
     // CORS headers
