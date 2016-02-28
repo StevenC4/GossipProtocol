@@ -77,7 +77,7 @@ $(document).ready(function() {
 
         var text = textarea.val();
         if (text.trim() != "" && text.trim() != '') {
-            socket.emit('chat message', {text: text, timestamp: Math.floor(new Date() / 1000)});
+            socket.emit('chat message', {text: text});
         }
         textarea.val('');
         textarea.focus();

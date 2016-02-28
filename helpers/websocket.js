@@ -21,7 +21,7 @@ functions.init = function(server) {
                     MessageID: config.getNewMessageId(),
                     Originator: config.getOriginator(),
                     Text: data.text,
-                    Timestamp: data.timestamp
+                    Timestamp: Math.floor(new Date() / 1000)
                 },
                 "EndPoint": config.getBaseUrl(),
                 "Timestamp": Math.floor(new Date() / 1000)
