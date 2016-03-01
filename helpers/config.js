@@ -34,6 +34,10 @@ functions.getNeighbor = function() {
     return neighbor;
 };
 
+functions.getNeighbors = function() {
+    return config.neighbors;
+}
+
 functions.setNeighbors = function(neighbors) {
     config.neighbors = neighbors;
 };

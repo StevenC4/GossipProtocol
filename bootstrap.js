@@ -5,6 +5,8 @@ var argv = require('minimist')(process.argv.slice(2));
 
 var clients = null;
 
+var sleep = argv.hasOwnProperty('s') ? argv.s : 500
+
 if (argv.hasOwnProperty('f')) {
     clients = JSON.parse(fs.readFileSync(argv.f, 'utf8'));
 } else {
@@ -39,5 +41,5 @@ for (var i = 0; i < keys.length; i++) {
         neighbors.push(baseUrl);
     }
 
-    children[i] = fork('./server.js', ['-d', client.domain, '-p', client.port, '-n', JSON.stringify(neighbors)]);
+    children[i] = fork('./server.js', ['-d', client.domain, '-p', client.port, '-s', sleep, '-n', JSON.stringify(neighbors)]);
 }

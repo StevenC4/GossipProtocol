@@ -23,8 +23,7 @@ functions.init = function(server) {
                     Text: data.text,
                     Timestamp: Math.floor(new Date() / 1000)
                 },
-                "EndPoint": config.getBaseUrl(),
-                "Timestamp": Math.floor(new Date() / 1000)
+                "EndPoint": config.getBaseUrl()
             };
 
             rumorStorage.store(rumor);
@@ -32,20 +31,21 @@ functions.init = function(server) {
         });
 
         socket.on('send random message', function() {
-            var neighborUrl = config.getNeighbor();
-
             var isWant = Math.floor(Math.random() * 2);
-            var data = null;
+            
+            var neighborUrl = null;
+            var body = null;
 
-            if (isWant || rumorStorage.rumorEmpty()) {
-                neighborUrl += '/wants';
-                data = rumorStorage.getWant();
+            if (isWant || !rumorStorage.hasUnsentRumors()) {
+                neighborUrl = config.getNeighbor() + '/wants';
+                body = rumorStorage.getWant();
             } else {
-                neighborUrl += '/rumors';
-                data = rumorStorage.getRumor();
+                var data = rumorStorage.getRandomUnsentRumor()
+                neighborUrl = data.Neighbor + '/rumors';
+                body = data.RandomRumor;
             }
 
-            httpClient.send(neighborUrl, data);
+            httpClient.send(neighborUrl, body);
         });
     });
 };

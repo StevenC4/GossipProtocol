@@ -82,6 +82,8 @@ $(document).ready(function() {
         textarea.val('');
         textarea.focus();
     }
+
+    $('textarea#message-input').focus();
 });
 
 function createMessageDiv(message) {

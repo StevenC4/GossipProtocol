@@ -6,6 +6,7 @@ var functions = {};
 
 var rumors = {};
 var messages = {};
+var unsentMessages = [];
 
 functions.store = function(rumor) {
     var uuid = rumor.Rumor.MessageID.split(':');
@@ -19,10 +20,55 @@ functions.store = function(rumor) {
     }
 
     if (!rumors[originId].hasOwnProperty(sequenceNum)) {
+ 
+        if (!rumor.Rumor.hasOwnProperty('Timestamp')) {
+            rumor.Rumor.Timestamp = Math.floor(new Date() / 1000);
+        }
+
         rumors[originId][sequenceNum] = rumor.Rumor;
+        addUnsentMessages(rumor);
         addMessage(rumor.Rumor);
     }
 };
+
+function addUnsentMessages(rumor) {
+    var neighbors = config.getNeighbors();
+    for (var i = 0; i < neighbors.length; i++) {
+        var neighbor = neighbors[i];
+        if (rumor.EndPoint != neighbor) {
+            var unsentMessageID = neighbor + '|' + rumor.Rumor.MessageID;
+            if (!(unsentMessageID in unsentMessages)) {
+                unsentMessages.push(unsentMessageID);
+            }
+        }
+    }
+}
+
+functions.getRandomUnsentRumor = function() {
+    if (unsentMessages.length == 0) {
+        return null;
+    }
+
+    var unsentMessageIndex = Math.floor(Math.random() * unsentMessages.length); 
+    var unsentMessageId = unsentMessages[unsentMessageIndex];
+    unsentMessages.splice(unsentMessageId, 1);
+
+    var unsentMessageIdParts = unsentMessageId.split('|');
+    
+    var neighbor = unsentMessageIdParts[0];
+    var messageId = unsentMessageIdParts[1];
+
+    var messageIdParts = messageId.split(':');
+    var originId = messageIdParts[0];
+    var sequenceNum = messageIdParts[1];
+
+    var rumor = rumors[originId][sequenceNum];
+    return {RandomRumor: {Rumor: rumor, EndPoint: config.getBaseUrl()}, Neighbor: neighbor};
+}
+
+functions.hasUnsentRumors = function() {
+    return unsentMessages.length > 0;
+}
 
 functions.getMessages = function() {
     return messages;

@@ -44,6 +44,7 @@ server.listen(port);
 var message = "Server listening on port " + port + "\n";
 message += "Origin ID: " + config.getOriginId() + "\n";
 message += "Originator name: " + config.getOriginator() + "\n";
+message += "Go to 'http://localhost:" + port + "' to access the messaging client\n";
 console.log(message);
 
 
@@ -86,39 +87,7 @@ app.use(function(req, res, next) {
     next(err);
 });
 
-/*
-// Looping functionality
 
-function sleep() {
-    setInterval(loop, config.getSleep() * 5);
-}
-
-var wantSize = 0;
-var pastWant = null;
-function loop() {
-    var neighborUrl1 = config.getNeighbor();
-    var neighborUrl2 = config.getNeighbor();
-
-    var randomRumor = rumorStorage.getRumor();
-    if (randomRumor != null) {
-        httpClient.send(neighborUrl1 + '/rumors', randomRumor);
-    }
-    httpClient.send(neighborUrl2 + '/wants', rumorStorage.getWant());
-    sleep();
-}
-
-sleep();
-
-//var neighborUrl1 = config.getNeighbor();
-//var neighborUrl2 = config.getNeighbor();
-
-//httpClient.send(neighborUrl1 + '/rumors', rumorStorage.getRumor());
-//httpClient.send(neighborUrl2 + '/wants', rumorStorage.getWant());
-*/
-
-var fork = require('child_process').fork;
-var fork = require('child_process').spawn;
-//child = fork('./send-loop.js', ['-u', config.getBaseUrl(), '-s', config.getSleep()]);
 var exec = require('child_process').exec;
 exec('node ./send-loop.js -u ' + config.getBaseUrl() + ' -s ' + config.getSleep(), function(error, stdout, stderr) {
     console.log('stdout: ' + stdout);
