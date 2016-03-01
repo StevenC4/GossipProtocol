@@ -4,7 +4,6 @@ var express = require('express');
 var http = require('http');
 var httpClient = require('./helpers/httpClient.js');
 var websocket = require('./helpers/websocket.js');
-var logger = require('morgan');
 
 // Routes
 var rumors = require('./routes/rumors.js');
@@ -52,7 +51,6 @@ console.log(message);
 // Add middleware
 app.set('view engine', 'jade');
 app.use(bodyParser.json());
-//app.use(logger('dev'));
 
 app.all('/*', function(req, res, next) {
     // CORS headers
