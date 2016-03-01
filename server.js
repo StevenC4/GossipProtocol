@@ -88,11 +88,23 @@ app.use(function(req, res, next) {
 });
 
 
-var exec = require('child_process').exec;
-exec('node ./send-loop.js -u ' + config.getBaseUrl() + ' -s ' + config.getSleep(), function(error, stdout, stderr) {
-    console.log('stdout: ' + stdout);
-    console.log('stderr: ' + stderr);
-    if (error !== null) {
-        console.log('exec error: ' + error);
+
+var fork = require('child_process').fork;
+var sendLoop = fork(__dirname + '/send-loop.js', ['-s', config.getSleep()]);
+sendLoop.on('message', function(data) {
+    var isWant = Math.floor(Math.random() * 2);
+        
+    var neighborUrl = null;
+    var body = null;
+
+    if (isWant || !rumorStorage.hasUnsentRumors()) {
+        neighborUrl = config.getNeighbor() + '/wants';
+        body = rumorStorage.getWant();
+    } else {
+        var data = rumorStorage.getRandomUnsentRumor()
+        neighborUrl = data.Neighbor + '/rumors';
+        body = data.RandomRumor;
     }
+
+    httpClient.send(neighborUrl, body);
 });

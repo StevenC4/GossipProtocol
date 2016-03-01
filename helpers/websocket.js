@@ -30,7 +30,7 @@ functions.init = function(server) {
             socket.emit('update conversation', {messages: rumorStorage.getMessages()});
         });
 
-        socket.on('send random message', function() {
+        /*socket.on('send random message', function() {
             var isWant = Math.floor(Math.random() * 2);
             
             var neighborUrl = null;
@@ -46,7 +46,7 @@ functions.init = function(server) {
             }
 
             httpClient.send(neighborUrl, body);
-        });
+        });*/
     });
 };
 
