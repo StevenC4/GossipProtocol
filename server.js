@@ -1,7 +1,6 @@
 // Dependencies
 var bodyParser = require('body-parser');
 var express = require('express');
-var fs = require('graceful-fs');
 var http = require('http');
 var httpClient = require('./helpers/httpClient.js');
 var websocket = require('./helpers/websocket.js');

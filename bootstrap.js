@@ -1,5 +1,4 @@
 var fork = require('child_process').fork;
-var fs = require('graceful-fs');
 
 var argv = require('minimist')(process.argv.slice(2));
 

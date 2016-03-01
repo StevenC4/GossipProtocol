@@ -1,6 +1,5 @@
 var config = require('./config.js');
 var websocket = require('./websocket.js');
-var fs = require('graceful-fs');
 
 var functions = {};
 

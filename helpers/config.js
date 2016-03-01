@@ -1,4 +1,3 @@
-var fs = require('graceful-fs');
 var randomName = require('random-name');
 var uuid = require('uuid');
 
