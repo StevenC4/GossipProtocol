@@ -29,24 +29,6 @@ functions.init = function(server) {
             rumorStorage.store(rumor);
             socket.emit('update conversation', {messages: rumorStorage.getMessages()});
         });
-
-        /*socket.on('send random message', function() {
-            var isWant = Math.floor(Math.random() * 2);
-            
-            var neighborUrl = null;
-            var body = null;
-
-            if (isWant || !rumorStorage.hasUnsentRumors()) {
-                neighborUrl = config.getNeighbor() + '/wants';
-                body = rumorStorage.getWant();
-            } else {
-                var data = rumorStorage.getRandomUnsentRumor()
-                neighborUrl = data.Neighbor + '/rumors';
-                body = data.RandomRumor;
-            }
-
-            httpClient.send(neighborUrl, body);
-        });*/
     });
 };
 

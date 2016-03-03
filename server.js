@@ -6,8 +6,7 @@ var httpClient = require('./helpers/httpClient.js');
 var websocket = require('./helpers/websocket.js');
 
 // Routes
-var rumors = require('./routes/rumors.js');
-var wants = require('./routes/wants.js');
+var requests = require('./routes/requests.js');
 
 
 // Get arguments and config
@@ -68,8 +67,7 @@ app.all('/*', function(req, res, next) {
 
 
 // Set up routes
-app.use('/', rumors);
-app.use('/', wants);
+app.use('/', requests);
 app.use('/public', express.static(__dirname + '/public'));
 app.use('/favicon.ico', express.static(__dirname + '/favicon.ico'));
 app.get('/', function(req, res) {
@@ -95,11 +93,11 @@ sendLoop.on('message', function(data) {
     var body = null;
 
     if (isWant || !rumorStorage.hasUnsentRumors()) {
-        neighborUrl = config.getNeighbor() + '/wants';
+        neighborUrl = config.getNeighbor();
         body = rumorStorage.getWant();
     } else {
         var data = rumorStorage.getRandomUnsentRumor()
-        neighborUrl = data.Neighbor + '/rumors';
+        neighborUrl = data.Neighbor;
         body = data.RandomRumor;
     }
 
