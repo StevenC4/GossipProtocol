@@ -84,7 +84,27 @@ $(document).ready(function() {
     }
 
     $('textarea#message-input').focus();
+
+    $('div#add-client').click(function() {
+        $('#dialog').dialog({
+            buttons: {
+                Cancel: function() {
+                    $(this).dialog( "close" );
+                },
+                "Add": addClient
+            },
+            close: resetForm
+        });
+    });
 });
+
+function addClient() {
+    alert("Adding client");
+}
+
+function resetForm() {
+    $('#dialog input').val('');
+}
 
 function createMessageDiv(message) {
     var originatorDisplay = (name == message.originator) ? "Me" : message.originator;
