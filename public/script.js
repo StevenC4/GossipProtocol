@@ -85,25 +85,35 @@ $(document).ready(function() {
 
     $('textarea#message-input').focus();
 
-    $('div#add-client').click(function() {
+    $('div#add-neighbor').click(function() {
         $('#dialog').dialog({
             buttons: {
                 Cancel: function() {
-                    $(this).dialog( "close" );
+                    $(this).dialog("close");
                 },
-                "Add": addClient
+                "Add": addNeighbor
             },
             close: resetForm
         });
     });
+
+    $('#dialog input#neighbor-url').keypress(function(event) {
+        if (event.which == 13) {
+            event.preventDefault();
+            addNeighbor();
+        }
+    });
+
+
+    function addNeighbor() {
+        var neighborUrl = $('#dialog input#neighbor-url').val();
+        socket.emit('add neighbor', {url: neighborUrl});
+        $('#dialog').dialog("close");
+    }
 });
 
-function addClient() {
-    alert("Adding client");
-}
-
 function resetForm() {
-    $('#dialog input').val('');
+    $('#dialog input#neighbor-url').val('');
 }
 
 function createMessageDiv(message) {

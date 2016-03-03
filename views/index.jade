@@ -13,7 +13,7 @@
 </head>
 <body>
 <div class="header-bar">
-<div id="add-client" class="button">Add A Friend</div>
+<div id="add-neighbor" class="button">Add A Friend</div>
 </div>
 <h1>Welcome, #{originator}!</h1>
 input(type="text", class="hidden originator" value="#{originator}")
@@ -24,7 +24,7 @@ input(type="text", class="hidden base-url" value="#{baseUrl}")
 <div id="send-button" class="button">Send</div>
 <div id="dialog" class="hidden" title="Add A Friend">
 <h2>To add a friend, enter the URL of their server with no trailing slash: <br><br>(ex: 'http://localhost:2020')</h2>
-<table><tr><td>URL:</td><td><input type='text'></td></tr></label>
+<table><tr><td>URL:</td><td><input id='neighbor-url' type='text'></td></tr></label>
 </div>
 </body>
 </html>

@@ -29,6 +29,10 @@ functions.init = function(server) {
             rumorStorage.store(rumor);
             socket.emit('update conversation', {messages: rumorStorage.getMessages()});
         });
+
+        socket.on('add neighbor', function(data) {
+            config.addNeighbor(data.url);
+        });
     });
 };
 
