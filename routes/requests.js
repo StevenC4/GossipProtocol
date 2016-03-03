@@ -28,7 +28,7 @@ router.post('/', function(req, res) {
 
     	res.send({message: 'Want received and processed'});
 	} else {
-		res.code(400).send(message: 'Bad Request');
+		res.code(400).send({message: 'Bad Request'});
 	}
     
 });
