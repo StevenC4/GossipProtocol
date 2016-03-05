@@ -45,6 +45,9 @@ functions.addNeighbor = function(neighbor) {
     config.neighbors.push(neighbor);
 };
 
+functions.neighborInList = function(neighbor) {
+    return config.neighbors.indexOf(neighbor) !== -1 ? true : false;
+};
 
 functions.getOriginator = function() {
     return config.originator;

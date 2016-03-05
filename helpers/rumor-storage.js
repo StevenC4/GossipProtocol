@@ -43,6 +43,22 @@ function addUnsentMessages(rumor) {
     }
 }
 
+functions.updateUnsentMessages = function(neighbor) {
+    var originIds = Object.keys(rumors);
+    for (var i = 0; i < originIds.length; i++) {
+        var originId = originIds[i];
+        var sequenceNums = Object.keys(rumors[originId]);
+        for (var j = 0; j < sequenceNums.length; j++) {
+            var sequenceNum = sequenceNums[i];
+            var rumor = rumors[originId][sequenceNum];
+            var unsentMessageID = neighbor + '|' + rumor.MessageID;
+            if (!(unsentMessageID in unsentMessages)) {
+                unsentMessages.push(unsentMessageID);
+            }   
+        }
+    }
+}
+
 functions.getRandomUnsentRumor = function() {
     if (unsentMessages.length == 0) {
         return null;

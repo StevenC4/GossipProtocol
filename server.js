@@ -87,19 +87,21 @@ app.use(function(req, res, next) {
 var fork = require('child_process').fork;
 var sendLoop = fork(__dirname + '/send-loop.js', ['-s', config.getSleep()]);
 sendLoop.on('message', function(data) {
-    var isWant = Math.floor(Math.random() * 2);
+    if (config.getNeighbors().length) {
+        var isWant = Math.floor(Math.random() * 2);
         
-    var neighborUrl = null;
-    var body = null;
+        var neighborUrl = null;
+        var body = null;
 
-    if (isWant || !rumorStorage.hasUnsentRumors()) {
-        neighborUrl = config.getNeighbor();
-        body = rumorStorage.getWant();
-    } else {
-        var data = rumorStorage.getRandomUnsentRumor()
-        neighborUrl = data.Neighbor;
-        body = data.RandomRumor;
+        if (isWant || !rumorStorage.hasUnsentRumors()) {
+            neighborUrl = config.getNeighbor();
+            body = rumorStorage.getWant();
+        } else {
+            var data = rumorStorage.getRandomUnsentRumor()
+            neighborUrl = data.Neighbor;
+            body = data.RandomRumor;
+        }
+
+        httpClient.send(neighborUrl, body);
     }
-
-    httpClient.send(neighborUrl, body);
 });

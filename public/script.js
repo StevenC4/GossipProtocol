@@ -107,8 +107,24 @@ $(document).ready(function() {
 
     function addNeighbor() {
         var neighborUrl = $('#dialog input#neighbor-url').val();
-        socket.emit('add neighbor', {url: neighborUrl});
         $('#dialog').dialog("close");
+        $.ajax({
+            url: neighborUrl,
+            method: 'POST',
+            dataType: 'application/json',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify({
+                Want: {},
+                EndPoint: $('input.base-url').val()
+            }),
+            complete: function(data) {
+                if (data.status == 200) {
+                    alert("Friend successfully added!");
+                } else {
+                    alert("Friend not added - invalid URL");
+                }
+            }
+        });
     }
 });
 

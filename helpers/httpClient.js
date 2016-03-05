@@ -11,7 +11,9 @@ functions.send = function(url, data) {
         },
         body: JSON.stringify(data)
     }, function(error, response, body) {
-        //console.log(error, response, body);
+        if (error) {
+            console.log("ERROR: ", error);
+        }
     });
 };
 

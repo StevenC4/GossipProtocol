@@ -31,7 +31,9 @@ functions.init = function(server) {
         });
 
         socket.on('add neighbor', function(data) {
-            config.addNeighbor(data.url);
+            var neighbor = data.url;
+            config.addNeighbor(neighbor);
+            rumorStorage.updateUnsentMessages(neighbor);
         });
     });
 };
